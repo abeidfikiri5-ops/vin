@@ -1,12 +1,15 @@
 {
-  "name": "backend",
+  "name": "iyunga-school-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Iyunga Secondary School Student Management Backend",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
+  "keywords": [
+    "school",
+    "student-management"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
