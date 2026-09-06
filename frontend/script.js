@@ -1,4 +1,4 @@
-const API_URL = "/api/students";
+const API_URL = "https://vin-production-21af.up.railway.app/api/students";
 
 // ===============================
 // ELEMENTS
