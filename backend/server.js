@@ -2,9 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
 const path = require("path");
+require("dotenv").config();
 
 const app = express();
-const PORT = 3000;
+
+const PORT = process.env.PORT || 3000;
 
 // ===============================
 // MIDDLEWARE
@@ -26,14 +28,17 @@ app.get("/", (req, res) => {
 });
 
 // ===============================
-// MYSQL
+// MYSQL DATABASE
 // ===============================
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "alvin",
-    database: "vin"
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_NAME || "vin",
+    port: process.env.DB_PORT
+        ? Number(process.env.DB_PORT)
+        : 3306
 });
 
 db.connect((err) => {
@@ -95,7 +100,6 @@ app.get("/api/students/:id", (req, res) => {
         }
 
         if (results.length === 0) {
-
             return res.status(404).json({
                 error: "Student not found"
             });
@@ -181,28 +185,22 @@ app.post("/api/students", (req, res) => {
     db.query(sql, values, (err, result) => {
 
         if (err) {
-
             console.error(err);
 
             if (err.code === "ER_DUP_ENTRY") {
-
                 return res.status(409).json({
-                    error:
-                        "Registration number already exists."
+                    error: "Registration number already exists."
                 });
             }
 
             return res.status(500).json({
-                error:
-                    "Failed to register student."
+                error: "Failed to register student."
             });
         }
 
         res.status(201).json({
-            message:
-                "Student registered successfully.",
-            id:
-                result.insertId
+            message: "Student registered successfully.",
+            id: result.insertId
         });
     });
 });
@@ -268,34 +266,27 @@ app.put("/api/students/:id", (req, res) => {
     db.query(sql, values, (err, result) => {
 
         if (err) {
-
             console.error(err);
 
             if (err.code === "ER_DUP_ENTRY") {
-
                 return res.status(409).json({
-                    error:
-                        "Registration number already exists."
+                    error: "Registration number already exists."
                 });
             }
 
             return res.status(500).json({
-                error:
-                    "Failed to update student."
+                error: "Failed to update student."
             });
         }
 
         if (result.affectedRows === 0) {
-
             return res.status(404).json({
-                error:
-                    "Student not found."
+                error: "Student not found."
             });
         }
 
         res.json({
-            message:
-                "Student updated successfully."
+            message: "Student updated successfully."
         });
     });
 });
@@ -314,26 +305,21 @@ app.delete("/api/students/:id", (req, res) => {
     db.query(sql, [req.params.id], (err, result) => {
 
         if (err) {
-
             console.error(err);
 
             return res.status(500).json({
-                error:
-                    "Failed to delete student."
+                error: "Failed to delete student."
             });
         }
 
         if (result.affectedRows === 0) {
-
             return res.status(404).json({
-                error:
-                    "Student not found."
+                error: "Student not found."
             });
         }
 
         res.json({
-            message:
-                "Student deleted successfully."
+            message: "Student deleted successfully."
         });
     });
 });
@@ -342,10 +328,6 @@ app.delete("/api/students/:id", (req, res) => {
 // START SERVER
 // ===============================
 
-app.listen(PORT, () => {
-
-    console.log(
-        `Server running at http://localhost:${PORT}`
-    );
-
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });
